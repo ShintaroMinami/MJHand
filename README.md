@@ -5,12 +5,12 @@ Japanese Riichi Mahjong Win-Hand Generator
 [![Python](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-MJHand is a Python library for generating and analyzing Japanese Riichi Mahjong winning hands (和了手).
+MJHand is a Python module for generating valid Japanese Riichi Mahjong winning hands (和了手).
 ## Features
 
-- **Win-Hand Sampling**: Generate random valid winning hands based on hand frequency
+- **Win-Hand Sampling**: Generate random valid winning hands based on theoretical hand frequencies
 - **Random Hand Generation**: Create random 14-tile hands for simulation
-- **Nearest Neighbor Search**: Find similar winning hands to a given query hand using Manhattan distance
+- **Nearest Neighbor Search**: Find winning hands similar to a given query hand using Manhattan distance
 
 ## Installation
 
@@ -41,7 +41,7 @@ mj = MJHand()
 
 # Sample a winning hand
 result = mj.sample_win_hand(num_samples=1)
-winning_hand = result["hands"][0]  # 34-array format
+winning_hand = result["hands"][0]  # 34-element array format
 win_tile = result["win_tiles"][0]  # winning tile index
 
 print(f"Winning hand: {winning_hand}")
@@ -56,15 +56,15 @@ random_hands = mj.sample_random_hand(num_samples=5, num_tiles=14)
 print(f"Random hands shape: {random_hands.shape}")
 
 # Find similar winning hands
-query_hand = random_hands[0]  # Use first random hand as query
+query_hand = random_hands[0]  # Use the first random hand as query
 similar_hands = mj.search_knn_win_hand(query_hand, k=10)
 print(f"Found {len(similar_hands['hands'])} similar hands")
-print(f"Distances: {similar_hands['dist_manhattan'][:5]}")  # Show first 5 distances
+print(f"Distances: {similar_hands['dist_manhattan'][:5]}")  # Show the first 5 distances
 ```
 
 ## Hand Representation
 
-Hands are represented using the 34-array format:
+Hands are represented using the 34-element array format:
 - Indices 0-8: 1-9 of man (萬子)
 - Indices 9-17: 1-9 of pin (筒子) 
 - Indices 18-26: 1-9 of sou (索子)
@@ -91,7 +91,7 @@ Sample valid winning hands from the database.
 
 **Returns:**
 - `dict`: Dictionary containing:
-  - `hands`: Array of winning hands (34-array format)
+  - `hands`: Array of winning hands (34-element array format)
   - `win_tiles`: Array of winning tile indices
   - `win_tiles_onehot`: One-hot encoded winning tiles
 
@@ -103,19 +103,19 @@ Generate random hands (not necessarily winning).
 - `num_tiles` (int): Number of tiles per hand (default: 14)
 
 **Returns:**
-- `numpy.ndarray`: Array of random hands in 34-array format
+- `numpy.ndarray`: Array of random hands in 34-element array format
 
 #### `search_knn_win_hand(query_hand, k=1000)`
-Find k nearest winning hands to a query hand.
+Find the k nearest winning hands to a query hand.
 
 **Parameters:**
-- `query_hand` (numpy.ndarray): Query hand in 34-array format
+- `query_hand` (numpy.ndarray): Query hand in 34-element array format
 - `k` (int): Number of nearest neighbors to return
 
 **Returns:**
 - `dict`: Dictionary containing:
-  - `hands`: Array of k nearest winning hands
-  - `dist_manhattan`: Manhattan distances to query hand
+  - `hands`: Array of the k nearest winning hands
+  - `dist_manhattan`: Manhattan distances to the query hand
 
 ## License
 
