@@ -1,0 +1,4 @@
+numpy
+pickle
+tqdm
+git+https://github.com/MahjongRepository/mahjong.git@v1.3.0
