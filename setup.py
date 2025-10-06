@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyfaspr",
+    name="mjhand",
     use_scm_version={'local_scheme': 'no-local-version'},
     author="Shintaro Minami",
     description="Japanese Riichi Mahjong Win-Hand Generator",
