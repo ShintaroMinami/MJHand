@@ -120,8 +120,3 @@ Find the k nearest winning hands to a query hand.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**Shintaro Minami** - [ShintaroMinami](https://github.com/ShintaroMinami)
-
