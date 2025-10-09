@@ -1,12 +1,14 @@
 #! /usr/bin/env python
-
+import sys
+sys.path.append('../')
+from time import time
 from mjhand import MJHand, convert_34_array_to_string_dict
 
 # Initialize the generator
 mjh = MJHand()
 
 # Sample 10 winning hands and print them
-hands = mjh.sample_win_hand(20)
+hands = mjh.sample_win_hand(10)
 for i, h in enumerate(hands["hands"]):
     print(f'hand-{i:02d}:', h)
 
@@ -28,6 +30,7 @@ print(f"Random hands shape: {random_hands.shape}")
 
 # Find similar winning hands
 query_hand = random_hands[0]  # Use first random hand as query
-similar_hands = mjh.search_knn_win_hand(query_hand, k=10)
-print(f"Found {len(similar_hands['hands'])} similar hands")
-print(f"Manhattan Distances: {similar_hands['dist_manhattan'][:5]}")  # Show first 5 distances
+t0 = time()
+similar_hands = mjh.search_knn_win_hand(query_hand, k=1000)
+print(f"Found {similar_hands['hands'].shape[1]} similar hands in {time() - t0:.2f} seconds")
+print(f"Manhattan Distances: {similar_hands['manhattan'][:5]}")  # Show first 5 distances

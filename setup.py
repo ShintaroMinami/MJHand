@@ -19,11 +19,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     setup_requires=['setuptools_scm'],
-    install_requires=[
-        'numpy',
-        'pickle',
-        'tqdm',
-        ],
+    install_requires=['faiss-cpu'],
+    requires=['numpy', 'pickle', 'tqdm'],
     scripts=[],
-
 )

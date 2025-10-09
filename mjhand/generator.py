@@ -3,6 +3,7 @@ from pathlib import Path
 DEFAULT_PKL_DIR = str(Path(__file__).resolve().parent / "pkl")
 import pickle
 import numpy as np
+import faiss
 from numpy.random import default_rng
 
 def distance_manhattan(x_db, x_q):
@@ -17,14 +18,17 @@ class MJHand():
         ):
         pkl_file = Path(pkl_dir) / "all_winhand_patterns.pkl"
         self.tiles_csr, self.weights = pickle.load(open(pkl_file, 'rb'))
+        self.tiles_csr = self.tiles_csr.toarray().astype(np.int8)
         self.num_patterns = self.tiles_csr.shape[0]
         self.num_tiles = self.tiles_csr.shape[1]
         self.rng = default_rng(seed)
         self.indices = np.arange(self.num_patterns)
+        self.index = faiss.IndexFlat(self.num_tiles, faiss.METRIC_L1)
+        self.index.add(self.tiles_csr)
 
     def sample_win_hand(self, num_samples=1):
         ids = self.rng.choice(self.indices, size=num_samples, replace=True, p=self.weights/np.sum(self.weights))
-        tiles = self.tiles_csr[ids].toarray().astype(int).copy()
+        tiles = self.tiles_csr[ids].copy()
         win_tile = np.array([self.rng.choice(range(self.num_tiles), size=1, p=t/np.sum(t))[0] for t in tiles])
         win_tile_onehot = np.eye(self.num_tiles, dtype=int)[win_tile]
         return {"hands": tiles, "win_tiles": win_tile, "win_tiles_onehot": win_tile_onehot}
@@ -38,14 +42,24 @@ class MJHand():
         return np.array(stack, dtype=np.int8)
 
     def search_knn_win_hand(self, query_hand, k=1000):
-        dists = distance_manhattan(self.tiles_csr.toarray().astype(np.int8), query_hand.astype(np.int8))
+        query_hand, squeeze = (query_hand[None, :], True) if query_hand.ndim == 1 else (query_hand, False)
+        knn_dists, args_k = self.index.search(query_hand, k=k)
+        knn_dists = knn_dists.astype(int)
+        knn_hands = self.tiles_csr[args_k]
+        if squeeze:
+            knn_dists, knn_hands = knn_dists.squeeze(), knn_hands.squeeze()
+        return {"hands": knn_hands, "manhattan": knn_dists}
+
+    def search_knn_win_hand_slow(self, query_hand, k=1000):
+        dists = distance_manhattan(self.tiles_csr, query_hand.astype(np.int8))
         args_k = np.argpartition(dists, k)[:k]
-        knn_hands = self.tiles_csr[args_k].toarray().astype(int)
+        knn_hands = self.tiles_csr[args_k]
         knn_dists = dists[args_k]
         idx = np.argsort(knn_dists)
         knn_dists = knn_dists[idx]
         knn_hands = knn_hands[idx]
-        return {"hands": knn_hands, "dist_manhattan": knn_dists}
+        return {"hands": knn_hands, "manhattan": knn_dists}
+
 
 
 def convert_34_index_to_34_array(index_34):
