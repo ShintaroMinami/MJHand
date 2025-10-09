@@ -9,7 +9,7 @@ MJHand is a Python module for generating valid Japanese Riichi Mahjong winning h
 ## Features
 
 - **Win-Hand Sampling**: Generate random valid winning hands based on theoretical hand frequencies
-- **Random Hand Generation**: Create random 14-tile hands for simulation
+- **Random Hand Generation**: Create random 14-tile (or 13-) hands for simulation
 - **Nearest Neighbor Search**: Find winning hands similar to a given query hand using Manhattan distance
 
 ## Installation
