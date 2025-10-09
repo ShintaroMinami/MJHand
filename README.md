@@ -117,7 +117,7 @@ Find the k nearest winning hands to a query hand.
 **Returns:**
 - `dict`: Dictionary containing:
   - `hands`: Array of the k nearest winning hands
-  - `dist_manhattan`: Manhattan distances to the query hand
+  - `manhattan`: Manhattan distances to the query hand
 
 ## License
 
