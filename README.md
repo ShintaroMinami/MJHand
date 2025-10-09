@@ -28,6 +28,8 @@ pip install -e .
 
 ## Dependencies
 
+- faiss-cpu
+- pickle
 - numpy
 - tqdm
 
